@@ -1,6 +1,6 @@
 import os
 from flask import Flask
-from routes.home_routes import home_bp
+from routes.home_routes import home
 from extensions.database import setup_db, db
 from flask_migrate import Migrate
 from flask_cors import CORS
@@ -24,9 +24,8 @@ def create_app():
     log_level = os.getenv('LOGGING_LEVEL', 'INFO').upper()
 
     # Register the home blueprint
-    app.register_blueprint(home_bp)
+    app.register_blueprint(home)
     return app
-
 
 # This conditional ensures the server only runs when the script is executed directly
 if __name__ == '__main__':

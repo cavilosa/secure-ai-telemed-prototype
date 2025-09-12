@@ -7,10 +7,6 @@ class User(db.Model, CRUDMixin):
     
     __tablename__ = "users"
 
-    __table_args__ = (
-        db.Index('ix_message_patient_timestamp', 'patient_id', 'timestamp'),
-    )
-
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
@@ -22,7 +18,7 @@ class User(db.Model, CRUDMixin):
 
     def set_password(self, password):
         """Hashes the password and stores it."""
-        self.password_hash = generate_password_hash(password)
+        self.password_hash = generate_password_hash(password, salt_length=16)
 
     def check_password(self, password) -> bool:
         """Verifies the provided password against the stored hash."""
