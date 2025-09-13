@@ -34,6 +34,7 @@ def login():
 
             user = User.query.filter_by(
                 username=username).first()
+            logging.info(f"User found: {user}")
 
             if user and user.check_password(password):   
                 token = jwt.encode(
@@ -43,8 +44,9 @@ def login():
                     }, 
                     os.environ.get('SECRET_KEY'),
                     algorithm='HS256')
-                return jsonify({"token": jsonify(token)}), 200   
+                return jsonify({"token": token}), 200  
             else:
+                logging.info(f"No user found or incorrect password for username: {username}")
                 return render_template(
                     'login.html', 
                     message="Unable to log in with provided credentials.")
