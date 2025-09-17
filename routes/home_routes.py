@@ -2,11 +2,14 @@
 import jwt
 import os
 import logging
-from datetime import datetime
-from flask import Blueprint, request, render_template,jsonify
+from datetime import datetime, timedelta
+from flask import Blueprint, request, render_template, jsonify, flash, redirect, url_for
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from models.user import User
+from models.patient import Patient
+from models.language import Language
+from models.message import Message
 
 # Cteate a Blueprint for home routes
 home = Blueprint('home', __name__, template_folder='templates', static_folder='static')
@@ -14,7 +17,16 @@ home = Blueprint('home', __name__, template_folder='templates', static_folder='s
 @home.route('/')
 def homepage():
     """A simple view function that returns a welcome message."""
-    return "Hello, World! The secure AI telemed prototype is running. 🚀"
+
+    patients = Patient.query.all()
+    logging.info(f"Retrieved {len(patients)} patients from the database.")
+    lagnuages = Language.query.all()
+    logging.info(f"Retrieved {len(lagnuages)} languages from the database.")    
+    messages = Message.query.all()
+    logging.info(f"Retrieved {len(messages)} messages from the database.") 
+
+
+    return render_template('index.html', message="Welcome to the Telemed")
 
 @home.route('/login', methods=['GET', 'POST'])
 def login():
@@ -40,16 +52,15 @@ def login():
                 token = jwt.encode(
                     {'username': username,
                     'role': user.role,
-                    'exp': datetime.now() + datetime.timedelta(hours=1)
+                    'exp': datetime.now() + timedelta(hours=1)
                     }, 
                     os.environ.get('SECRET_KEY'),
                     algorithm='HS256')
-                return jsonify({"token": token}), 200  
+                return jsonify({"token": token}), 200
             else:
-                logging.info(f"No user found or incorrect password for username: {username}")
-                return render_template(
-                    'login.html', 
-                    message="Unable to log in with provided credentials.")
+                logging.error(f"No user found or incorrect password for username: {username}")
+                flash('Check your credentials and try again.')
+                return redirect(url_for('home.homepage'))
         else:
             logging.info(f"GET request to /login")
             return render_template(

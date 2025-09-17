@@ -2,7 +2,7 @@ from zoneinfo import ZoneInfo
 from extensions.database import db
 from datetime import datetime
 from babel.dates import format_datetime
-from .appointment import languages_patients # Assuming this is correctly defined elsewhere
+from .language import languages_patients
 from sqlalchemy.orm import Mapped
 from typing import List
 from .base import CRUDMixin
@@ -33,7 +33,6 @@ class Patient(db.Model, CRUDMixin):
 
     preferred_messenger = db.Column(db.String(20), default='WA')
 
-    # Many-to-many relationship for languages. This is the correct approach.
     languages: Mapped[List["Language"]] = db.relationship(
         secondary=languages_patients,
         back_populates="patients"

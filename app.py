@@ -20,11 +20,10 @@ def create_app():
         DEBUG='true',
         TEMPLATES_AUTO_RELOAD=True,
         SQLALCHEMY_DATABASE_URI=os.getenv("SQLALCHEMY_DATABASE_URI", "sqlite:///fallback.db"),
-        LOGGING_LEVEL=os.getenv("LOGGING_LEVEL", "INFO")
+        LOGGING_LEVEL=os.getenv("LOGGING_LEVEL", "INFO"),
+        SECRET_KEY=os.getenv("SECRET_KEY", "mysecretkey")
     )
     app.config.update(default_config)
-
-    log_level = os.getenv('LOGGING_LEVEL', 'INFO').upper()
 
     # Register the home blueprint
     app.register_blueprint(home)

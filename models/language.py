@@ -1,12 +1,7 @@
-from zoneinfo import ZoneInfo
-from ..extensions.database import db
-from sqlalchemy.orm import column_property
-from sqlalchemy import select
+from extensions.database import db
 from sqlalchemy.orm import Mapped
 from typing import List
-from datetime import datetime
-import pytz
-from main import CRUDMixin
+from .base import CRUDMixin
 
 
 languages_patients = db.Table(
