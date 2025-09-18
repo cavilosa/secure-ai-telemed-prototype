@@ -1,60 +1,71 @@
 import re
 import logging
-from flask import jsonify
 
 # Configure basic logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-def redact_email(text):
+def redact_email(text: str) -> str:
     """
     Redacts email addresses from the given text.
+
     Args:
         text: The input string to process.
+
     Returns:
         A new string with email addresses replaced by '[REDACTED EMAIL]'.
+
     Raises:
         TypeError: If the input is not a string.
-    """ 
+    """
     if not isinstance(text, str):
-            # Raise an error instead of trying to convert. The calling code should handle this.
-            raise TypeError("Input must be a string.")     
-    try:   
-        # Regex pattern is effective for common email formats
-        email_regex_pattern = r'[\w\.\-\+]+@[\w\.\-]+\.\w+'
-
-        redacted_text = re.sub(email_regex_pattern, '[REDACTED EMAIL]', text)  
-
-        # Log if a change was made
+        # Raise an error as the function expects a string.
+        raise TypeError("Input must be a string.")
+    try:
+        # Pattern for common email formats, including those with '+' aliases.
+        regex_pattern = r'[\w\.\-\+]+@[\w\.\-]+\.\w+'
+        redacted_text = re.sub(regex_pattern, '[REDACTED EMAIL]', text)
         if redacted_text != text:
-            logging.info("Successfully redacted email(s) from text: {redacted_text}")
+            logging.info("Successfully redacted email(s) from text.")
         return redacted_text
     except Exception as e:
-        # Log any unexpected errors during the regex operation
+        # Log any unexpected errors during the regex operation and re-raise.
         logging.error(f"An unexpected error occurred during email redaction: {e}")
-        # Re-raise the exception so the caller is aware of the failure.
         raise
 
+def redact_phone_number(text: str) -> str:
+    """
+    Redacts North American phone numbers from the given text using a two-pattern approach.
 
-def redact_phone(text):
-    ''' Redact phone numbers from the given text. 
     Args:
         text: The input string to process.
+
     Returns:
         A new string with phone numbers replaced by '[REDACTED PHONE]'.
+
     Raises:
-        TypeError: If the input is not a string.'''
+        TypeError: If the input is not a string.
+    """
     if not isinstance(text, str):
-            # Raise an error instead of trying to convert. The calling code should handle this.
-            raise TypeError("Input must be a string.")
+        raise TypeError("Input must be a string.")
     try:
-        phone_regex_pattern = r''
+        # Pattern 1: A complex pattern for various formats with separators.
+        # Handles formats like (xxx) xxx-xxxx, xxx-xxx-xx-xx, etc.
+        regex_pattern = r"1?[\s\-(]*\(?\d{3}\)?[\s\-)]*(\d{3}[\s\-]*\d{4}|\d{3}[\s\-]*\d{2}[\s\-]*\d{2}|\d{7})"
+        
+        # Pattern 2: A simpler, stricter pattern for purely numeric strings (10 or 11 digits).
+        # The \b word boundaries are crucial to prevent matching parts of longer numbers.
+        numeric_pattern = r"\b(1?)(\d{10})\b"
+        
+        # First pass: Handle the complex, formatted numbers.
+        redacted_text = re.sub(regex_pattern, '[REDACTED PHONE]', text)
+        
+        # Second pass: Handle the simple, numeric-only strings on the already processed text.
+        redacted_text = re.sub(numeric_pattern, '[REDACTED PHONE]', redacted_text)
 
-        redactred_text = re.sub(phone_regex_pattern, '[REDACTED PHONE]', text) 
+        if redacted_text != text:
+            logging.info("Successfully redacted phone number(s) from text.")
+        return redacted_text
+    except Exception as e:
+        logging.error(f"An unexpected error occurred during phone redaction: {e}")
+        raise
 
-        if redactred_text != text:
-            logging.info("Successfully redacted phone number(s) from text: {redactred_text}")
-        return redactred_text
-    except (ValueError, BaseException) as error:
-        error_message = f"{error.__type__}: {error}"
-        logging.error(error_message)
-        return jsonify('success', False, 'error': error_message), 400
