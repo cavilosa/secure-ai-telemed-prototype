@@ -141,6 +141,10 @@ The initial test suite in `tests/test_reduction.py` covers the PII/PHI redaction
     ```bash
     pytest
     ```
+    or
+    ```
+    python -m pytest
+    ```
 
 This will automatically discover and run all test files within the `tests/` directory.
 

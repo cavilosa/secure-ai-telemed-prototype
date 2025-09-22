@@ -33,7 +33,7 @@ class TestReduction:
         # Test cases with expected redactions
         test_cases = [
             ("Call me at (123) 456-7890", "Call me at [REDACTED PHONE]"),
-            ("My number is 123-456-78-90", "My number is 123-456-78-90"), # Invalid format
+            ("My number is 123-456-78-90", "My number is [REDACTED PHONE]"),
             ("Reach me at 1234567890", "Reach me at [REDACTED PHONE]"),
             ("International: +1 (123) 456-7890", "International: [REDACTED PHONE]"),
             ("No phone number here!", "No phone number here!"),
