@@ -125,6 +125,24 @@ Follow these instructions to get a local copy of the project up and running for 
    ```
 
    The application will be available at `http://127.0.0.1:5000`.
+   
+
+## 🧪 Testing
+
+This project uses `pytest` for unit and integration testing. All tests are located in the `tests/` directory.
+
+The initial test suite in `tests/test_reduction.py` covers the PII/PHI redaction logic, ensuring that emails and phone numbers are correctly identified and redacted while invalid formats are ignored.
+
+### Running Tests
+
+1.  Make sure you have installed all project dependencies, including `pytest`.
+2.  From the project's root directory, run the following command:
+
+    ```bash
+    pytest
+    ```
+
+This will automatically discover and run all test files within the `tests/` directory.
 
 ## 🗺️ Project Roadmap
 
