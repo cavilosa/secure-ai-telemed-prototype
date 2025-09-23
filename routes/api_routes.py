@@ -2,12 +2,12 @@ from flask import Blueprint, request, jsonify, redirect, url_for, render_templat
 import logging
 import jwt
 import os
-import functools
 from functools import wraps
 
 from datetime import datetime, timedelta
 
 from models.user import User
+from ..services.redaction import redact_email, redact_phone_number
 
 api = Blueprint('api', __name__, template_folder='templates', static_folder='static')
 
@@ -43,12 +43,30 @@ def token_required(permissions): # permissions=['get:redaction']
 @api.route('/redact', methods=['POST','GET'])
 @token_required(permissions='get:redaction')
 def redact(current_user, user_role):
-    if not request.is_json:
-        return jsonify({"error": "Invalid input, JSON expected"}), 400
-    data = request.get_json() 
+    ''' Redact the incoming json data with pii covering techniques '''
+    if not request.is_json():
+        return jsonify({'success': 'false', 'error': 'Must be JSON'}), 400
+    
+    try:
+        data = request.get_json()
+        text_to_redact = data.get('text_to_redact')
 
+        if not text_to_redact:
+            return jsonify({'success': 'false', 'error': "Missing 'text_to_redact' key in request"}, 400)
+        
+        text_after_phones = redact_phone_number(text_to_redact)
+        final_reduct_text = redact_email(text_after_phones)
 
-    return "Redact endpoint"
+        return jsonify({
+            'success': True,
+            'final_reduct_text': final_reduct_text
+        })
+    except Exception as error:
+        logging.error(f"A redaction error has occurred: {error}")
+        return jsonify({
+            'success': False,
+            'error': 'An internal error occurred during redaction.'
+        }), 500
 
 
 @api.route('/login', methods=['GET', 'POST'])
