@@ -11,41 +11,41 @@ from models.user import User
 
 api = Blueprint('api', __name__, template_folder='templates', static_folder='static')
 
-def token_required(func):
-    @wraps(func) # Ensures the original function's metadata is preserved
-    def wrapper(*args, **kwargs):
-        """A decorator to protect routes that require a valid JWT token."""
-        token = None
-        if 'Authorization' in request.headers:
-            token = request.headers['Authorization'].split(" ")[1] if " " in request.headers['Authorization'] else request.headers['Authorization']
-        if not token:
-            return jsonify({'message': 'Token is missing!'}), 401
-        try:
-            payload = jwt.decode(token, os.environ.get('SECRET_KEY'), algorithms=['HS256'])
-            current_user = User.query.filter_by(username=payload['username']).first()
-            permissions_required = kwargs.pop('permissions', {})
-            if permissions_required not in payload.get('role', {}):
-                return jsonify({'message': 'Permission denied!'}), 403
-            user_role = payload.get('role')
-            if not current_user:
-                return jsonify({'message': 'User not found!'}), 401
-            value = func(current_user, user_role, *args, **kwargs)
-            return value
-        except jwt.ExpiredSignatureError:
-            return jsonify({'message': 'Token has expired!'}), 401
-        except Exception as e:
-            logging.error(f"Token decoding error: {e}")
-            return jsonify({'message': 'Token is invalid!'}), 401
-    return wrapper
+# decoreator factory
+def token_required(permissions): # permissions=['get:redaction']
+    def decorator(func):
+        @wraps(func) # Ensures the original function's metadata is preserved
+        def wrapper(*args, **kwargs): # The code that runs before the route
+            """A decorator to protect routes that require a valid JWT token."""
+            token = None
+            if 'Authorization' in request.headers:
+                token = request.headers['Authorization'].split(" ")[1] if " " in request.headers['Authorization'] else request.headers['Authorization']
+            if not token:
+                return jsonify({'message': 'Token is missing!'}), 401
+            try:
+                payload = jwt.decode(token, os.environ.get('SECRET_KEY'), algorithms=['HS256'])
+                current_user = User.query.filter_by(username=payload['username']).first()
+                user_permissions = payload.get('permissions', '').split(" ")
+                if permissions not in user_permissions:
+                    return jsonify({'message': 'Permission denied!'}), 403
+                user_role = payload.get('role')
+                if not current_user:
+                    return jsonify({'message': 'User not found!'}), 401
+                value = func(current_user, user_role, *args, **kwargs)
+                return value
+            except Exception as e:
+                logging.error(f"Token decoding error: {e}")
+                return jsonify({'message': 'Token is invalid!'}), 401    
+        return wrapper
+    return decorator
 
 
 @api.route('/redact', methods=['POST','GET'])
-@token_required(permissions={'role': 'admin'})
-def redact():
+@token_required(permissions='get:redaction')
+def redact(current_user, user_role):
     if not request.is_json:
         return jsonify({"error": "Invalid input, JSON expected"}), 400
     data = request.get_json() 
-
 
 
     return "Redact endpoint"
@@ -75,6 +75,7 @@ def login():
                 token = jwt.encode(
                     {'username': username,
                     'role': user.role,
+                    'permissions': user.permissions,
                     'exp': datetime.now() + timedelta(hours=1)
                     }, 
                     os.environ.get('SECRET_KEY'),

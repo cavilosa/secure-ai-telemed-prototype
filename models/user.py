@@ -15,6 +15,7 @@ class User(db.Model, CRUDMixin):
     is_active = db.Column(db.Boolean, default=True, nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     user_meta = db.Column(db.JSON, nullable=True)
+    permissions = db.Column(db.String(120), nullable=True)
 
     def set_password(self, password):
         """Hashes the password and stores it."""
