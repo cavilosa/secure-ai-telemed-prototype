@@ -74,7 +74,7 @@ Follow these instructions to get a local copy of the project up and running for 
 
 ### Prerequisites
 
-* Python 3.10+
+* Python 3.11+
 
 * Pip & Virtualenv
 
