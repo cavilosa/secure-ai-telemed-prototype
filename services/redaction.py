@@ -2,6 +2,8 @@ import re
 import logging
 import spacy
 
+logger = logging.getLogger(__name__)
+
 class ReductionService:
     def __init__(self):
         # Load the model once when the service is created for efficiency
@@ -21,9 +23,11 @@ class ReductionService:
         return text
     
     def hybrid_redact(self, text: str):
+        logging.info("Hybrid redaction has been initiated") 
         regex_redact_text = self.redact_with_regex(text)
         final_redact_text = self.redact_with_nlp(regex_redact_text)
-
+        occurrences  = final_redact_text.count('[Redacted')
+        logging.info(f"The hybrid redacted {occurrences} many instances.")
         return final_redact_text
 
 # Configure basic logging

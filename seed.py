@@ -37,6 +37,11 @@ def seed_data():
         db.session.add(new_user)
         print("Staged test user for creation.")
 
+    if not test_user.permissions:
+        test_user.permissions='get:redaction'
+        db.session.add(test_user)
+        print(f"Add permissions to tthe test_user.username: {test_user.permissions}")
+
     # --- Seed Languages ---
     languages_to_seed = ['English', 'Ukrainian', 'Spanish']
     for lang_name in languages_to_seed:
