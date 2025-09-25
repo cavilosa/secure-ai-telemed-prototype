@@ -30,6 +30,7 @@ def seed_data():
             role='Health Navigator', 
             password_hash=hashed_password,
             is_active=True,
+            permissions='get:redaction'
         )
 
         # Add the new user to the session and commit to the database

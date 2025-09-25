@@ -1,5 +1,5 @@
 # Use an absolute import from the project root
-from services.redaction import redact_email, redact_phone_number
+from services.redaction import ReductionService, redact_email, redact_phone_number
 
 class TestReduction:
     def test_redact_email(self):
@@ -55,3 +55,22 @@ class TestReduction:
 
         for input_text, expected_output in test_cases:
             assert redact_phone_number(input_text) == expected_output
+    
+
+    def test_hybrid_redact(self):
+        test_cases = [
+            ("Contact Mr. John Doe in Berlin at john.doe@example.com or his assistant Jane Smith.",
+             "Contact Mr. [Redacted PII] in [Redacted PII] at [REDACTED EMAIL] or his assistant [Redacted PII]."),
+            ("John's family name is Russ and his number is 9875673452",
+             "[Redacted PII]'s family name is [Redacted PII] and his number is [REDACTED PHONE]"),
+            ('She is my friend, her name is Alice and you can get her at restor@gmal.uk.rus',
+             'She is my friend, her name is [Redacted PII] and you can get her at [REDACTED EMAIL]'),
+            ("Please, call me and email me the details",
+             "Please, call me and email me the details"),
+            ('Estrogen@transform.com', '[REDACTED EMAIL]'),
+            ('We are in Zurich', 'We are in [Redacted PII]'),
+            ('Going to Indian with Tonia', 'Going to [Redacted PII] with [Redacted PII]')]
+        
+        for input_text, expected_output in test_cases:
+            nlp = ReductionService()
+            assert nlp.hybrid_redact(input_text) == expected_output
