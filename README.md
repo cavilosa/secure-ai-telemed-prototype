@@ -16,6 +16,8 @@
 
 ## 🎯 Project Vision
 
+This project is a full-stack telemedicine prototype that demonstrates end-to-end AI security, including robust JWT authentication, automated CI/CD security pipelines, and an AI-powered PII/PHI redaction filter.
+
 In an era of rapidly advancing AI, handling sensitive data—especially Protected Health Information (PHI)—requires more than just functional code. This project serves as a practical, hands-on exploration of building a secure and resilient system from the ground up.
 
 The goal is not just to build a telemedicine app, but to answer the question: **"How can we leverage AI features while systematically managing the unique risks they introduce?"**
