@@ -7,7 +7,7 @@ from functools import wraps
 from datetime import datetime, timedelta
 
 from models.user import User
-from ..services.redaction import redact_email, redact_phone_number
+from services.redaction import ReductionService
 
 api = Blueprint('api', __name__, template_folder='templates', static_folder='static')
 
@@ -54,8 +54,8 @@ def redact(current_user, user_role):
         if not text_to_redact:
             return jsonify({'success': 'false', 'error': "Missing 'text_to_redact' key in request"}, 400)
         
-        text_after_phones = redact_phone_number(text_to_redact)
-        final_reduct_text = redact_email(text_after_phones)
+        redaction_services = ReductionService()
+        final_reduct_text = redaction_services.hybrid_redact(text_to_redact)
 
         return jsonify({
             'success': True,

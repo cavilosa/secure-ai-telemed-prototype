@@ -1,5 +1,34 @@
 import re
 import logging
+import spacy
+
+logger = logging.getLogger(__name__)
+
+class ReductionService:
+    def __init__(self):
+        # Load the model once when the service is created for efficiency
+        self.nlp = spacy.load("en_core_web_sm")
+
+    def redact_with_regex(self, text: str):
+        text = redact_email(text)
+        text = redact_phone_number(text)
+        return text
+    
+    def redact_with_nlp(self, text: str):
+        doc = self.nlp(text)
+        reversed_ents = doc.ents[::-1]
+        redacted_sub = '[Redacted PII]'
+        for ent in reversed_ents:
+            text = text[:ent.start_char] + redacted_sub + text[ent.end_char:]
+        return text
+    
+    def hybrid_redact(self, text: str):
+        logging.info("Hybrid redaction has been initiated") 
+        regex_redact_text = self.redact_with_regex(text)
+        final_redact_text = self.redact_with_nlp(regex_redact_text)
+        occurrences  = final_redact_text.count('[Redacted')
+        logging.info(f"The hybrid redacted {occurrences} many instances.")
+        return final_redact_text
 
 # Configure basic logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')

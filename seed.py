@@ -30,11 +30,17 @@ def seed_data():
             role='Health Navigator', 
             password_hash=hashed_password,
             is_active=True,
+            permissions='get:redaction'
         )
 
         # Add the new user to the session and commit to the database
         db.session.add(new_user)
         print("Staged test user for creation.")
+
+    if not test_user.permissions:
+        test_user.permissions='get:redaction'
+        db.session.add(test_user)
+        print(f"Add permissions to tthe test_user.username: {test_user.permissions}")
 
     # --- Seed Languages ---
     languages_to_seed = ['English', 'Ukrainian', 'Spanish']
