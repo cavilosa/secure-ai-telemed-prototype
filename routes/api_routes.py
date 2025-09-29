@@ -18,7 +18,7 @@ def token_required(permissions): # permissions=['get:redaction']
         def wrapper(*args, **kwargs): # The code that runs before the route
             """A decorator to protect routes that require a valid JWT token."""
             token = None
-            if 'Authorization' in request.headers:
+            if 'Authorization' in request.headers: # Make sure the Authorization Header is present
                 token = request.headers['Authorization'].split(" ")[1] if " " in request.headers['Authorization'] else request.headers['Authorization']
             if not token:
                 return jsonify({'message': 'Token is missing!'}), 401
