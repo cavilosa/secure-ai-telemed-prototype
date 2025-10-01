@@ -1,5 +1,5 @@
 import os
-from flask import Flask
+from flask import Flask, request
 from flask_migrate import Migrate
 from flask_cors import CORS
 import logging
@@ -8,7 +8,16 @@ from pythonjsonlogger import jsonlogger
 from routes.home_routes import home
 from routes.api_routes import api
 from extensions.database import setup_db, db
+from extensions.auth import get_user_id_from_token
 
+class ContextFilter(logging.Filter):
+    """
+    This is a filter which injects contextual information into the log.
+    """
+    def filter(self, record):
+        user_id = get_user_id_from_token()
+        record.user_id = user_id
+        return True
 
 def create_app():
     'Application factory function'
@@ -21,7 +30,7 @@ def create_app():
     logger.handlers.clear() # Clear Flask logger handlers
     logger.setLevel(logging.DEBUG)
 
-    formatter = jsonlogger.JsonFormatter("{message}{asctime}{name}{levelname}", style='{')
+    formatter = jsonlogger.JsonFormatter("{message} - {asctime} - {name} - {levelname} - {user_id}", style='{')
 
     file_handler = logging.FileHandler('app.log')
     file_handler.setFormatter(formatter)
@@ -31,6 +40,9 @@ def create_app():
     
     logger.addHandler(file_handler)
     logger.addHandler(console_hanler)
+    
+    context_filter = ContextFilter()
+    logger.addFilter(context_filter)
 
     default_config = dict(
         THREADED=True,

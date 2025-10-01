@@ -7,38 +7,10 @@ from functools import wraps
 from datetime import datetime, timedelta
 
 from models.user import User
-from services.redaction import ReductionService
+from services.redaction import RedactionService
+from extensions.auth import token_required
 
 api = Blueprint('api', __name__, template_folder='templates', static_folder='static')
-
-# decoreator factory
-def token_required(permissions): # permissions=['get:redaction']
-    def decorator(func):
-        @wraps(func) # Ensures the original function's metadata is preserved
-        def wrapper(*args, **kwargs): # The code that runs before the route
-            """A decorator to protect routes that require a valid JWT token."""
-            token = None
-            if 'Authorization' in request.headers: # Make sure the Authorization Header is present
-                token = request.headers['Authorization'].split(" ")[1] if " " in request.headers['Authorization'] else request.headers['Authorization']
-            if not token:
-                return jsonify({'message': 'Token is missing!'}), 401
-            try:
-                payload = jwt.decode(token, os.environ.get('SECRET_KEY'), algorithms=['HS256'])
-                current_user = User.query.filter_by(username=payload['username']).first()
-                user_permissions = payload.get('permissions', '').split(" ")
-                if permissions not in user_permissions:
-                    return jsonify({'message': 'Permission denied!'}), 403
-                user_role = payload.get('role')
-                if not current_user:
-                    return jsonify({'message': 'User not found!'}), 401
-                value = func(current_user, user_role, *args, **kwargs)
-                return value
-            except Exception as e:
-                logging.error(f"Token decoding error: {e}")
-                return jsonify({'message': 'Token is invalid!'}), 401    
-        return wrapper
-    return decorator
-
 
 @api.route('/redact', methods=['POST','GET'])
 @token_required(permissions='get:redaction')
@@ -54,8 +26,8 @@ def redact(current_user, user_role):
         if not text_to_redact:
             return jsonify({'success': 'false', 'error': "Missing 'text_to_redact' key in request"}, 400)
         
-        redaction_services = ReductionService()
-        final_reduct_text = redaction_services.hybrid_redact(text_to_redact)
+        redaction_services = RedactionService()
+        final_reduct_text = redaction_services.hybrid_redact(text=text_to_redact)
 
         return jsonify({
             'success': True,
@@ -92,6 +64,7 @@ def login():
             if user and user.check_password(password):   
                 token = jwt.encode(
                     {'username': username,
+                     'user_id': user.id,
                     'role': user.role,
                     'permissions': user.permissions,
                     'exp': datetime.now() + timedelta(hours=1)
