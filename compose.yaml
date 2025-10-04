@@ -1,0 +1,14 @@
+services:
+  web:
+    # docker compose up will look for a Dockerfile and build a new, custom image from it
+    build: . 
+    ports:
+      # Post 500 - usual for Flask app
+      - "8000:5000"
+    develop:
+      watch:
+        - action: sync
+          path: .
+          target: /code
+  # redis:
+  #   image: "redis:alpine"
