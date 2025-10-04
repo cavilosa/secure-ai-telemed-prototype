@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 
 from models.user import User
 from services.redaction import RedactionService
-from extensions.auth import token_required
+from extensions.auth.utils import token_required
 
 api = Blueprint('api', __name__, template_folder='templates', static_folder='static')
 

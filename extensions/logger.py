@@ -1,6 +1,6 @@
 import logging
-from flask import request
-from extensions.auth import get_user_id_from_token
+from flask import has_request_context
+from extensions.auth.utils import get_user_id_from_token
 from pythonjsonlogger import jsonlogger
 
 class ContextFilter(logging.Filter):
@@ -8,7 +8,10 @@ class ContextFilter(logging.Filter):
     This is a filter which injects contextual information into the log.
     """
     def filter(self, record):
-        user_id = get_user_id_from_token()
+        user_id = None 
+
+        if has_request_context():
+            user_id = get_user_id_from_token()
         record.user_id = user_id
         return True
 
