@@ -6,7 +6,7 @@ services:
       - .env
     ports:
       # the host : the container
-      - "8000:5000"
+      - "5000:5000"
     develop:
       watch:
         - action: sync
