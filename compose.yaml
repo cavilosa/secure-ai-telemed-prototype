@@ -2,8 +2,10 @@ services:
   web:
     # docker compose up will look for a Dockerfile and build a new, custom image from it
     build: . 
+    env_file:
+      - .env
     ports:
-      # Post 500 - usual for Flask app
+      # the host : the container
       - "8000:5000"
     develop:
       watch:
