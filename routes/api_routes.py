@@ -11,26 +11,28 @@ from extensions.auth.utils import token_required
 
 api = Blueprint('api', __name__, template_folder='templates', static_folder='static')
 
-@api.route('/redact', methods=['POST','GET'])
 @token_required(permissions='get:redaction')
+@api.route('/redact', methods=['POST','GET'])
 def redact(current_user, user_role):
     ''' Redact the incoming json data with pii covering techniques '''
     if not request.is_json():
+        logging.error(f" Request is not json.")
         return jsonify({'success': 'false', 'error': 'Must be JSON'}), 400
-    
     try:
         data = request.get_json()
         text_to_redact = data.get('text_to_redact')
 
         if not text_to_redact:
+            logging.error(f" No text to redact. ")
             return jsonify({'success': 'false', 'error': "Missing 'text_to_redact' key in request"}, 400)
         
         redaction_services = RedactionService()
-        final_reduct_text = redaction_services.hybrid_redact(text=text_to_redact)
+        final_redact_text = redaction_services.hybrid_redact(text=text_to_redact)
+        logging.info(f" Final redact text {final_redact_text}")
 
         return jsonify({
             'success': True,
-            'final_reduct_text': final_reduct_text
+            'final_redact_text': final_redact_text
         })
     except Exception as error:
         logging.error(f"A redaction error has occurred: {error}")

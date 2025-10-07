@@ -6,14 +6,17 @@ services:
       - .env
     environment:
       - FLASK_ENV=development
+      - FLASK_DEBUG=1
     ports:
       # the host : the container
       - "5000:5000"
-    develop:
-      watch:
-        - action: sync
-          path: .
-          target: /code
+    # develop:
+    #   watch:
+    #     - action: sync
+    #       path: .
+    #       target: /code
+    volumes:
+      - .:/code
   db:
     image: postgres
     env_file:
