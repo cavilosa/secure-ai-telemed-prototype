@@ -8,6 +8,8 @@ from functools import wraps
 def get_user_id_from_token():
     user_id = None
     try:
+        if 'Authorization' not in request.headers:
+            return user_id
         token = request.headers['Authorization'].split(" ")[1] if " " in request.headers['Authorization'] else request.headers['Authorization']
         data_dict = jwt.decode(token, os.environ.get('SECRET_KEY'), algorithm='HS256')
         user_id = data_dict.get("user_id")
@@ -39,8 +41,7 @@ def token_required(permissions): # permissions=['get:redaction']
         @wraps(func) # Ensures the original function's metadata is preserved
         def wrapper(*args, **kwargs): # The code that runs before the route
             """A decorator to protect routes that require a valid JWT token."""
-            try:
-                
+            try:        
                 current_user, jwt_payload = get_request_user()
                 user_permissions = jwt_payload.get('permissions', '').split(" ")
                 if permissions not in user_permissions:

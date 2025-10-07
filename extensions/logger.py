@@ -9,7 +9,6 @@ class ContextFilter(logging.Filter):
     """
     def filter(self, record):
         user_id = None 
-
         if has_request_context():
             user_id = get_user_id_from_token()
         record.user_id = user_id

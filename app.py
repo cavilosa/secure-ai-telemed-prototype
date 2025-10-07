@@ -29,6 +29,11 @@ def create_app():
     )
     app.config.update(default_config)
 
+    if os.environ.get("FLASK_ENV") == 'development':
+        # docker compose exec web flask seed-db - the command to populate the db from the terminal
+        from commands import db_population
+        app.cli.add_command(db_population)
+
     # Register the home blueprint
     app.register_blueprint(home)
     app.register_blueprint(api)
