@@ -11,11 +11,12 @@ from extensions.auth.utils import token_required
 
 api = Blueprint('api', __name__, template_folder='templates', static_folder='static')
 
-@token_required(permissions='get:redaction')
 @api.route('/redact', methods=['POST','GET'])
-def redact(current_user, user_role):
+@token_required(permissions=['get:redaction'])
+def redact():
     ''' Redact the incoming json data with pii covering techniques '''
-    if not request.is_json():
+    # logging.info(f" Redact has been activated {request.get_json()}")
+    if not request.is_json:
         logging.error(f" Request is not json.")
         return jsonify({'success': 'false', 'error': 'Must be JSON'}), 400
     try:
@@ -72,6 +73,7 @@ def login():
                     }, 
                     os.environ.get('SECRET_KEY'),
                     algorithm='HS256')
+                logging.info(f" Token - {token[0:5]}")
                 return jsonify({"token": token}), 200
             else:
                 logging.error(f"No user found or incorrect password for username: {username}")

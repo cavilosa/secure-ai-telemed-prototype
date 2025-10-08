@@ -1,4 +1,4 @@
-from flask import request, jsonify
+from flask import request, jsonify, g
 from models.user import User
 import jwt
 import os
@@ -61,15 +61,15 @@ def token_required(permissions): # permissions='get:redaction'
                     return jsonify({'message': 'Permission denied!'}), 403
                 user_role = jwt_payload.get('role')
                 logging.info(f" User's role {user_role}")
+
                 if not user:
                     return jsonify({'message': 'User not found!'}), 401
-                # func is a placeholder for the original function that you put the 
-                # @token_required decorator on top of.
-                # func() finally runs the original protected function and passes along the 
-                # current_user and user_role that were extracted from the token
-                value = func(user, user_role, *args, **kwargs)
-                logging.info(f"The user is authorized.")
-                return value
+                
+                g.current_user = user
+                g.user_role = jwt_payload.get('role')
+                logging.info(f"User and role have been attached to the request context {g}.")
+
+                return func(*args, **kwargs)
             except Exception as e:
                 logging.error(f"Token decoding error: {e}")
                 return jsonify({'message': 'Token is invalid!'}), 401    
