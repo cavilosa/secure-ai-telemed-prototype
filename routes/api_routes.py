@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 
 from models.user import User
 from services.redaction import RedactionService
-from services.llm_service import generate_text
+from services.llm_service import llm_service
 from extensions.auth.utils import token_required
 
 api = Blueprint('api', __name__, template_folder='templates', static_folder='static')
@@ -118,7 +118,7 @@ def generate_response(user):
 
     # 2. Call the service layer to perform the core logic
     try:
-        generated_text = generate_text(prompt)
+        generated_text = llm_service.generate(prompt)
         
         # Check if the service layer itself returned a known error message
         if "Sorry" in generated_text:
