@@ -7,13 +7,14 @@ from datetime import datetime, timedelta
 
 from models.user import User
 from services.redaction import RedactionService
+from services.llm_service import generate_text
 from extensions.auth.utils import token_required
 
 api = Blueprint('api', __name__, template_folder='templates', static_folder='static')
 
 @api.route('/redact', methods=['POST','GET'])
 @token_required(permissions=['get:redaction'])
-def redact():
+def redact(user):
     ''' Redact the incoming json data with pii covering techniques '''
     # logging.info(f" Redact has been activated {request.get_json()}")
     if not request.is_json:
@@ -87,3 +88,57 @@ def login():
     except Exception as e:
         logging.error(f"Error during login: {e}")
         return render_template('login.html', message='')
+    
+
+# LLM model integration endpoint
+@api.route('/generate', methods=['POST'])
+@token_required(permissions=['get:redaction']) # The decorator passes the user object to the function
+def generate_response(user):
+    """
+    Accepts a JSON payload with a 'prompt' and returns a model-generated text completion.
+    This is a protected endpoint and requires a valid JWT with appropriate permissions.
+    """
+    # 1. Validate the incoming request
+    if not request.is_json:
+        logging.error("Request received is not in JSON format.")
+        return jsonify({
+            "success": False,
+            "error": "Bad Request: payload must be in JSON format."
+        }), 400
+
+    data = request.get_json()
+    prompt = data.get('prompt')
+
+    if not prompt:
+        logging.warning("Request received with an empty prompt.")
+        return jsonify({
+            "success": False,
+            "error": "Bad Request: 'prompt' field cannot be empty."
+        }), 400
+
+    # 2. Call the service layer to perform the core logic
+    try:
+        generated_text = generate_text(prompt)
+        
+        # Check if the service layer itself returned a known error message
+        if "Sorry" in generated_text:
+            return jsonify({
+                "success": False,
+                "error": "An internal error occurred while generating the text."
+            }), 500
+
+        logging.info(f"Successfully generated response for user: {user.username}")
+        
+        # 3. Return a successful response
+        return jsonify({
+            "success": True,
+            "generated_text": generated_text
+        }), 200
+
+    except Exception as e:
+        # Catch any other unexpected errors
+        logging.critical(f"An unexpected critical error occurred in /generate endpoint: {e}")
+        return jsonify({
+            "success": False,
+            "error": "Internal Server Error"
+        }), 500

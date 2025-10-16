@@ -17,6 +17,7 @@ services:
     #       target: /code
     volumes:
       - .:/code
+    command: gunicorn --bind 0.0.0.0:5000 --reload "app:create_app()"
   db:
     image: postgres
     env_file:

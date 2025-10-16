@@ -1,5 +1,5 @@
-# Use a specific, lightweight Python version as the base
-FROM python:3.11-alpine
+# Use the Debian-based 'slim' image which is compatible with PyTorch
+FROM python:3.11-slim
 
 # Set the working directory inside the container
 WORKDIR /code
@@ -10,19 +10,22 @@ ENV FLASK_RUN_HOST=0.0.0.0
 
 # --- Build Stage ---
 
-# 1. Install all system dependencies required for building Python packages.
-#    These are needed for packages that compile from source code.
-RUN apk add --no-cache gcc musl-dev linux-headers cmake build-base pkgconfig
+# 1. Install system dependencies required for building Python packages using Debian's package manager.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    cmake \
+    build-essential \
+ && rm -rf /var/lib/apt/lists/*
 
-# 2. Copy and install the Python dependencies using the fast `uv` installer.
+# 2. Install the fast `uv` installer.
 COPY requirements.txt requirements.txt
 RUN pip install uv
-RUN uv pip install --system --no-cache -r requirements.txt
 
-# 3. (Best Practice) Clean up the build dependencies.
-#    We remove them now that the Python packages are installed to create a smaller final image.
-RUN apk del gcc musl-dev linux-headers cmake build-base pkgconfig
+# 2a. Increase the HTTP timeout for the package installer to handle slow connections.
+ENV UV_HTTP_TIMEOUT=300
 
+# 3. Install Python dependencies, telling 'uv' to also look in the PyTorch CPU repository.
+RUN uv pip install --system --no-cache --index-strategy unsafe-best-match --extra-index-url https://download.pytorch.org/whl/cpu -r requirements.txt
 # --- Final Stage ---
 
 # 4. Copy the rest of your application's source code into the container.
@@ -32,4 +35,5 @@ COPY . .
 EXPOSE 5000
 
 # 6. Set the command to run the application using the Gunicorn server.
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:create_app()"]
+

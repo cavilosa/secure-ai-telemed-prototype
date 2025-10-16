@@ -69,7 +69,7 @@ def token_required(permissions): # permissions='get:redaction'
                 g.user_role = jwt_payload.get('role')
                 logging.info(f"User and role have been attached to the request context {g}.")
 
-                return func(*args, **kwargs)
+                return func(user, *args, **kwargs)
             except Exception as e:
                 logging.error(f"Token decoding error: {e}")
                 return jsonify({'message': 'Token is invalid!'}), 401    

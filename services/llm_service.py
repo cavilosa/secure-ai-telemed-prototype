@@ -1,32 +1,48 @@
 from transformers import pipeline
+import logging
 
-# 1. Load the model you chose from the Hub
-# The 'model' argument is just the model's name from the website.
-generator = pipeline(task="text-generation", model="gpt2")
+# --- Model Loading (Happens only ONCE at startup) ---
+try:
+    logging.info("Loading text-generation model...")
+    # Using 'distilgpt2' is recommended for development as it's much smaller and faster than 'gpt2'.
+    generator = pipeline('text-generation', model='distilgpt2')
+    logging.info("Model loaded successfully.")
+except Exception as e:
+    # If the model fails to load, log a critical error and create a placeholder.
+    logging.critical(f"Failed to load language model: {e}")
+    generator = None
 
-# 2. Use the loaded model to perform a task
-# This will return a dictionary with the generated text.
-result = generator("The first step into model integration is", max_length=20)
-print(result)
+# --- Text Generation Function ---
+def generate_text(prompt: str) -> str:
+    """
+    Generates text using the pre-loaded model.
 
-def generate_text(prompt):
-    '''Create a function, something like generate_text(prompt), that takes a user's text as input, 
-    passes it to the loaded model, and returns the model's output.'''
-    pass
+    Args:
+        prompt: The input text to continue.
 
-'''How It Connects to Everything Else: routes/
+    Returns:
+        The generated text string, or an error message if something goes wrong.
+    """
+    # Check if the model failed to load during startup.
+    if generator is None:
+        logging.error("Text generation unavailable: Model not loaded.")
+        return "Sorry, the text generation service is currently unavailable."
 
-Your API endpoints, which live in the routes/ directory, will be the "front door" for model requests. Here's how it will work:
+    try:
+        # The pipeline returns a list of dictionaries, e.g.: [{'generated_text': '...'}].
+        output = generator(
+            prompt, 
+            max_new_tokens=70, # Controls how many new tokens to generate.
+            truncation=True    # Explicitly allows truncating long prompts.
+        )
+        
+        # We need to access the first element of the list and then get the value 
+        # from the 'generated_text' key.
+        generated_text = output[0]['generated_text']
+        
+        logging.info(f"Successfully generated text for prompt: '{prompt}'")
+        return generated_text
 
-    A user sends a request with a text prompt to an API endpoint you create (e.g., /api/generate).
-
-    The code in your route file (e.g., routes/generation_routes.py) will receive that request.
-
-    It will then call the generate_text() function from your new services/model_service.py file.
-
-    The model_service will run the prompt through the AI model and return the generated text.
-
-    Finally, your route will send that generated text back to the user as a JSON response.
-
-This structure is excellent because it keeps your project clean and organized. 
-Your routes handle the web traffic, and your services handle the complex "thinking" part.'''
+    except Exception as error:
+        logging.error(f"An error occurred during text generation: {error}")
+        return "Sorry, an error occurred while generating the text."
