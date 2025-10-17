@@ -9,16 +9,29 @@ class TestLLMService:
     Test suite for the LLMService class.
     """
 
+    def __init__(self):
+        self.mocker
+
     def test_generate_success_happy_path(self, mocker):
         """
         Tests the successful generation of text when the model behaves as expected.
         This is your 'test_mock_generation'.
         """
-        # HINT: The 'mocker' is a tool to create a fake version of the model.
-        # Use mocker.patch('services.llm_service.llm_service.generator')
-        # to replace the real AI model with a fake one that returns a predictable
-        # dictionary, like [{'generated_text': 'A predictable test response.'}]
-        pass
+
+        fake_prompt = "Hello AI"
+        fake_response_text = "Hello AI, this is a predictable test response."
+        fake_model_output = [{'generated_text': fake_response_text}]
+
+        mocker.patch(
+            'services.llm_service.llm_service.generator',
+            return_value=fake_model_output             
+        )
+
+        # 3. Call the real function you are testing
+        actual_result = llm_service.generate(fake_prompt)
+
+        # 4. Assert that the result is what you expected
+        assert actual_result == fake_response_text
 
     @pytest.mark.parametrize("bad_input", [None, 123, "", []])
     def test_generate_handles_bad_inputs(self, bad_input):
