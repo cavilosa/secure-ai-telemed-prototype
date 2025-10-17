@@ -9,6 +9,7 @@ from models.user import User
 from services.redaction import RedactionService
 from services.llm_service import llm_service
 from extensions.auth.utils import token_required
+from services.prompt_filters import validator
 
 api = Blueprint('api', __name__, template_folder='templates', static_folder='static')
 
@@ -98,7 +99,7 @@ def generate_response(user):
     Accepts a JSON payload with a 'prompt' and returns a model-generated text completion.
     This is a protected endpoint and requires a valid JWT with appropriate permissions.
     """
-    # 1. Validate the incoming request
+    # Validate the incoming request
     if not request.is_json:
         logging.error("Request received is not in JSON format.")
         return jsonify({
@@ -115,8 +116,11 @@ def generate_response(user):
             "success": False,
             "error": "Bad Request: 'prompt' field cannot be empty."
         }), 400
+    
+    # Guard the input
+    validator.validate_prompt(prompt)
 
-    # 2. Call the service layer to perform the core logic
+    # Call the service layer to perform the core logic
     try:
         generated_text = llm_service.generate(prompt)
         
@@ -128,11 +132,13 @@ def generate_response(user):
             }), 500
 
         logging.info(f"Successfully generated response for user: {user.username}")
+
+        validated_output = validator.filter_output(generated_text)
         
-        # 3. Return a successful response
+        # Return a successful response
         return jsonify({
             "success": True,
-            "generated_text": generated_text
+            "generated_text": validated_output
         }), 200
 
     except Exception as e:
