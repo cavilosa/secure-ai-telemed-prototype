@@ -137,16 +137,21 @@ The initial test suite in `tests/test_reduction.py` covers the PII/PHI redaction
 
 ### Running Tests
 
-1.  Make sure you have installed all project dependencies, including `pytest`.
-2.  From the project's root directory, run the following command:
+This project is fully containerized, and all tests must be run inside the running web service container to ensure access to all the necessary dependencies.
 
-    ```bash
-    pytest
-    ```
-    or
-    ```
-    python -m pytest
-    ```
+1. Ensure Containers are Running: Before running tests, make sure your application is running in detached mode. If it's not, start it with:
+
+```
+docker compose up -d
+```
+
+2. Execute Pytest in the Container: From the project's root directory, run the following command to execute the test suite inside the web container:
+
+```
+docker compose exec web pytest
+```
+
+This command will automatically discover and run all test files within the tests/ directory. You will see the output, including passing and failing tests, directly in your terminal.
 
 This will automatically discover and run all test files within the `tests/` directory.
 
