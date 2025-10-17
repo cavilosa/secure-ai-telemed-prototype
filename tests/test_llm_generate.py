@@ -37,8 +37,12 @@ class TestLLMService:
         """
         Tests that the service doesn't crash when given various invalid inputs.
         """
-        with pytest.raises(TypeError):
-             llm_service.generate(bad_input)
+        result = llm_service.generate(bad_input)
+
+        # ASSERT
+        # The function should catch the internal error and return our friendly message.
+        expected_error_msg = "Sorry, an error occurred while generating the text."
+        assert result == expected_error_msg
 
 
     def test_generate_when_model_fails_to_load(self, mocker: MockerFixture):

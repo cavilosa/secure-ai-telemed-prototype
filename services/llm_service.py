@@ -1,7 +1,6 @@
 from transformers import pipeline
 import logging
 
-# --- Model Loading (Happens only ONCE at startup) ---
 
 class LLMService:
     """
@@ -21,7 +20,6 @@ class LLMService:
             # If the model fails to load, log a critical error and create a placeholder.
             logging.critical(f"Failed to load language model: {e}")
 
-    # --- Text Generation Function ---
     def generate(self, prompt: str) -> str:
         """
         Generates text using the pre-loaded model.

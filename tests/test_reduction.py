@@ -1,5 +1,5 @@
 # Use an absolute import from the project root
-from services.redaction import ReductionService, redact_email, redact_phone_number
+from services.redaction import RedactionService, redact_email, redact_phone_number
 
 class TestReduction:
     def test_redact_email(self):
@@ -72,5 +72,5 @@ class TestReduction:
             ('Going to Indian with Tonia', 'Going to [Redacted PII] with [Redacted PII]')]
         
         for input_text, expected_output in test_cases:
-            nlp = ReductionService()
+            nlp = RedactionService()
             assert nlp.hybrid_redact(input_text) == expected_output
