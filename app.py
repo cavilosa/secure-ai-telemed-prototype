@@ -13,12 +13,7 @@ from extensions.logger import set_up_logging
 def create_app():
     'Application factory function'
     app = Flask(__name__)
-    setup_db(app)
-    Migrate(app, db, compare_type=True)
-    CORS(app, expose_headers="Authorization")
 
-    set_up_logging()
- 
     default_config = dict(
         THREADED=True,
         DEBUG='true',
@@ -28,6 +23,12 @@ def create_app():
         SECRET_KEY=os.getenv("SECRET_KEY", "mysecretkey"), 
     )
     app.config.update(default_config)
+
+    setup_db(app)
+    Migrate(app, db, compare_type=True)
+    CORS(app, expose_headers="Authorization")
+
+    set_up_logging()
 
     if os.environ.get("FLASK_ENV") == 'development':
         # docker compose exec web flask seed-db - the command to populate the db from the terminal

@@ -1,7 +1,5 @@
-#<-- The main file your API will call
-
-from .pii_detector import find_pii_in_output, is_pii_extraction_attempt
-from .injection_detector import is_direct_injection_attempt
+from .pii_detector import NNPModel
+from .injections_detector import is_direct_injection_attempt
 
 def validate_prompt(prompt: str):
     """
@@ -11,7 +9,7 @@ def validate_prompt(prompt: str):
     if is_direct_injection_attempt(prompt):
         raise ValueError("Malicious prompt detected: Direct injection attempt.")
 
-    if is_pii_extraction_attempt(prompt):
+    if NNPModel.is_pii_extraction_attempt(prompt):
         raise ValueError("Malicious prompt detected: PII extraction attempt.")
     
     # If all checks pass, do nothing.
@@ -21,6 +19,6 @@ def filter_output(output: str) -> str:
     Scans and sanitizes the AI model's output before sending to the user.
     """
     # Redact any accidental PII leaks
-    sanitized_output = find_pii_in_output(output, redact=True)
+    sanitized_output = NNPModel.find_pii_in_output(output, redact=True)
     
     return sanitized_output
