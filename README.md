@@ -56,7 +56,7 @@ The system is designed with a core principle of data separation. The main applic
 
 ## 🛠️ Technology Stack
 
-* **Backend:** Python 3.11+, Flask
+* **Backend:** Python 3.11+, Flask, Nmap (sudo apt-get install nmap)
 
 * **AI/ML:** spaCy (for Named Entity Recognition), Scikit-learn
 
@@ -233,4 +233,4 @@ This is a personal portfolio project, but feedback and suggestions are always we
 
 ## 📄 License
 
-This project is licensed under the MIT License. See the `LICENSE` file for details.
+This project is licensed under the MIT License. See the `LICENSE` file for details.4

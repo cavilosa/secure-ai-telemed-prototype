@@ -12,9 +12,11 @@ ENV FLASK_RUN_HOST=0.0.0.0
 
 # 1. Install system dependencies required for building Python packages using Debian's package manager.
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    nmap \
     gcc \
     cmake \
     build-essential \
+    libpq-dev \
  && rm -rf /var/lib/apt/lists/*
 
 # 2. Install the fast `uv` installer.
