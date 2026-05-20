@@ -2,49 +2,28 @@
 
 ## 📖 Table of Contents
 
-- [Project Vision](#project-vision)
-- [Core Features](#core-features)
-- [Security Focus](#security-focus)
-- [System Architecture](#system-architecture)
-- [Technology Stack](#technology-stack)
-- [Getting Started](#getting-started)
-- [Project Roadmap](#project-roadmap)
-- [Advanced Ideas & Future Scope](#advanced-ideas--future-scope)
-- [Key Concepts & Resources](#key-concepts--resources)
-- [Contributing](#contributing)
-- [License](#license)
+- [Executive Summary](#-executive-summary)
+- [Project Vision](#-project-vision)
+- [Core Features](#-core-features)
+- [Security Focus](#-security-focus)
+- [System Architecture](#-system-architecture)
+- [Technology Stack](#-technology-stack)
+- [Getting Started](#-getting-started)
+- [Testing](#-testing)
+- [Project Roadmap & Completed Milestones](#-project-roadmap--completed-milestones)
+- [Advanced Ideas & Future Scope](#-advanced-ideas--future-scope)
+- [Key Concepts & Resources](#-key-concepts--resources)
+- [Contributing](#-contributing)
+- [License](#-license)
+- [Let's Connect](#-lets-connect)
 
-  > [!IMPORTANT]
+> [!IMPORTANT]
 > **Project Archival Notice (May 2026)**
-> This repository is now archived and serves as a static portfolio piece. It successfully fulfilled its goal of demonstrating a secure, compliance-focused implementation of AI in healthcare. I am currently focusing my efforts on technical deep-dives into IT infrastructure and vendor risk management under my professional brand, **NorthShield Cyber**, as well as actively pursuing my CompTIA Security+ and Microsoft Azure security certifications. 
+> This repository is now archived and serves as a static portfolio piece. It successfully fulfilled its goal of demonstrating a secure, compliance-focused implementation of AI in healthcare. I am currently focusing my efforts on technical deep-dives into IT infrastructure and vendor risk management under my professional brand, **NorthShield Cyber**, as well as actively pursuing my CompTIA Security+ and Microsoft Azure security certifications.
 
 ## 🎯 Executive Summary
+
 **A proof-of-concept demonstrating how to securely implement AI in a highly regulated healthcare context, featuring automated NLP-based PII/PHI redaction, stateless JWT authentication, and strict adherence to cross-border compliance principles (HIPAA & PIPEDA).**
-
-*(Leave your existing "Project Vision" text directly below this)*
-
-... [Keep your existing Core Features, Security Focus, System Architecture, Tech Stack, Getting Started, and Testing sections] ...
-
-## 🗺️ Project Roadmap & Completed Milestones
-- [x] **Phase 1: Foundations & Secure AI Prototype**
-  - [x] Scaffold Flask application with Blueprints
-  - [x] Implement AI-powered PII/PHI Redaction Filter (Regex + NER)
-  - [x] Integrate JWT-based authentication
-  - [x] Dockerize the application
-  - [x] Pass (ISC)² Certified in Cybersecurity (CC) exam
-
-### 🔭 Concepts for Future Exploration
-*Note: As this project is archived, the following concepts represent my ongoing areas of research and adversarial study rather than active development goals for this codebase.*
-- Develop a Python-based Prompt Injection Fuzzer for red-team exercises against the AI filter.
-- Build automated, secure CI/CD pipelines with GitHub Actions for pre-deployment vulnerability scanning.
-- Deep dive into automated compliance mapping for zero-trust architectures.
-
-... [Keep your Advanced Ideas and Key Concepts sections] ...
-
-## 📫 Let's Connect
-If you are interested in discussing this prototype, secure IT infrastructure, or vendor risk management, I would love to connect. 
-* **LinkedIn:** [Insert your LinkedIn URL here]
-* **NorthShield Cyber:** Follow my latest technical insights and security deep-dives.
 
 ## 🎯 Project Vision
 
@@ -119,9 +98,8 @@ Follow these instructions to get a local copy of the project up and running for 
 1. **Clone the repository:**
 
    ```
-   git clone [https://github.com/cavilosa/secure-ai-telemed-prototype.git](https://github.com/cavilosa/secure-ai-telemed-prototype.git)
+   git clone https://github.com/cavilosa/secure-ai-telemed-prototype.git
    cd secure-ai-telemed-prototype
-   
    ```
 
 2. **Create and activate a virtual environment:**
@@ -182,49 +160,22 @@ The initial test suite in `tests/test_reduction.py` covers the PII/PHI redaction
 
 This will automatically discover and run all test files within the `tests/` directory.
 
-## 🗺️ Project Roadmap
+## 🗺️ Project Roadmap & Completed Milestones
 
-* \[x\] **Phase 1: Foundations & Secure AI Prototype (Sept – Nov 2025)**
+- [x] **Phase 1: Foundations & Secure AI Prototype**
+  - [x] Scaffold Flask application with Blueprints
+  - [x] Implement AI-powered PII/PHI Redaction Filter (Regex + NER)
+  - [x] Integrate JWT-based authentication
+  - [x] Dockerize the application
+  - [x] Pass (ISC)² Certified in Cybersecurity (CC) exam
 
-  * \[x\] Scaffold Flask application with Blueprints
+### 🔭 Concepts for Future Exploration
 
-  * \[ \] Implement AI-powered PII/PHI Redaction Filter (Regex + NER)
+*Note: As this project is archived, the following concepts represent my ongoing areas of research and adversarial study rather than active development goals for this codebase.*
 
-  * \[ \] Integrate JWT-based authentication
-
-  * \[ \] Dockerize the application
-
-  * \[ \] Pass ISC² Certified in Cybersecurity (CC) exam
-
-* \[ \] **Phase 2: Adversarial Mindset & Public Debut (Dec 2025 – Feb 2026)**
-
-  * \[ \] Develop a Python-based Prompt Injection Fuzzer
-
-  * \[ \] Conduct Red Team exercise against the PII filter
-
-  * \[ \] Publish a blog post detailing the fuzzer and its findings
-
-  * \[ \] Begin studying for CompTIA Security+
-
-* \[ \] **Phase 3: Automation & Cross-Border Compliance (Mar – May 2026)**
-
-  * \[ \] Build a Secure CI/CD Pipeline with GitHub Actions
-
-  * \[ \] Automate adversarial testing within the pipeline
-
-  * \[ \] Deep dive into HIPAA (Technical Safeguards) & PIPEDA (10 Principles)
-
-  * \[ \] Write an article on automating security for AI features
-
-* \[ \] **Phase 4: Full-Stack Audit & Professional Polish (June – Aug 2026)**
-
-  * \[ \] Write a comprehensive AI Security Audit Report
-
-  * \[ \] Map all technical controls to HIPAA/PIPEDA requirements
-
-  * \[ \] Pass the CompTIA Security+ exam
-
-  * \[ \] Polish portfolio and prepare for job search
+- Develop a Python-based Prompt Injection Fuzzer for red-team exercises against the AI filter.
+- Build automated, secure CI/CD pipelines with GitHub Actions for pre-deployment vulnerability scanning.
+- Deep dive into automated compliance mapping for zero-trust architectures.
 
 ## 🧠 Advanced Ideas & Future Scope
 
@@ -261,3 +212,10 @@ This is a personal portfolio project, but feedback and suggestions are always we
 ## 📄 License
 
 This project is licensed under the MIT License. See the `LICENSE` file for details.
+
+## 📫 Let's Connect
+
+If you are interested in discussing this prototype, secure IT infrastructure, or vendor risk management, I would love to connect.
+
+* **LinkedIn:** [Insert your LinkedIn URL here]
+* **NorthShield Cyber:** Follow my latest technical insights and security deep-dives.
