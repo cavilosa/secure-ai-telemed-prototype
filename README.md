@@ -217,5 +217,5 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 
 If you are interested in discussing this prototype, secure IT infrastructure, or vendor risk management, I would love to connect.
 
-* **LinkedIn:** [Insert your LinkedIn URL here]
+* **LinkedIn:** [[Insert your LinkedIn URL here]](https://www.linkedin.com/in/maryna-korzhyk-9339521b8)
 * **NorthShield Cyber:** Follow my latest technical insights and security deep-dives.
