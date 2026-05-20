@@ -14,6 +14,38 @@
 - [Contributing](#contributing)
 - [License](#license)
 
+  > [!IMPORTANT]
+> **Project Archival Notice (May 2026)**
+> This repository is now archived and serves as a static portfolio piece. It successfully fulfilled its goal of demonstrating a secure, compliance-focused implementation of AI in healthcare. I am currently focusing my efforts on technical deep-dives into IT infrastructure and vendor risk management under my professional brand, **NorthShield Cyber**, as well as actively pursuing my CompTIA Security+ and Microsoft Azure security certifications. 
+
+## 🎯 Executive Summary
+**A proof-of-concept demonstrating how to securely implement AI in a highly regulated healthcare context, featuring automated NLP-based PII/PHI redaction, stateless JWT authentication, and strict adherence to cross-border compliance principles (HIPAA & PIPEDA).**
+
+*(Leave your existing "Project Vision" text directly below this)*
+
+... [Keep your existing Core Features, Security Focus, System Architecture, Tech Stack, Getting Started, and Testing sections] ...
+
+## 🗺️ Project Roadmap & Completed Milestones
+- [x] **Phase 1: Foundations & Secure AI Prototype**
+  - [x] Scaffold Flask application with Blueprints
+  - [x] Implement AI-powered PII/PHI Redaction Filter (Regex + NER)
+  - [x] Integrate JWT-based authentication
+  - [x] Dockerize the application
+  - [x] Pass (ISC)² Certified in Cybersecurity (CC) exam
+
+### 🔭 Concepts for Future Exploration
+*Note: As this project is archived, the following concepts represent my ongoing areas of research and adversarial study rather than active development goals for this codebase.*
+- Develop a Python-based Prompt Injection Fuzzer for red-team exercises against the AI filter.
+- Build automated, secure CI/CD pipelines with GitHub Actions for pre-deployment vulnerability scanning.
+- Deep dive into automated compliance mapping for zero-trust architectures.
+
+... [Keep your Advanced Ideas and Key Concepts sections] ...
+
+## 📫 Let's Connect
+If you are interested in discussing this prototype, secure IT infrastructure, or vendor risk management, I would love to connect. 
+* **LinkedIn:** [Insert your LinkedIn URL here]
+* **NorthShield Cyber:** Follow my latest technical insights and security deep-dives.
+
 ## 🎯 Project Vision
 
 This project is a full-stack telemedicine prototype that demonstrates end-to-end AI security, including robust JWT authentication, automated CI/CD security pipelines, and an AI-powered PII/PHI redaction filter.
